@@ -125,16 +125,18 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         await update.message.reply_text(f"❌ שגיאה: {e}")
 
-async def main():
-    print("🚀 SEO.NEWSITE מתחיל...")
+async def post_init(application: Application):
     scheduler = AsyncIOScheduler(timezone="Asia/Jerusalem")
-    scheduler.add_job(lambda: asyncio.get_event_loop().run_in_executor(None, run_weekly_report), "cron", day_of_week="sun", hour=9, minute=0)
+    scheduler.add_job(
+        lambda: asyncio.get_event_loop().run_in_executor(None, run_weekly_report),
+        "cron", day_of_week="sun", hour=9, minute=0
+    )
     scheduler.start()
-    app = Application.builder().token(TELEGRAM_TOKEN).build()
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle))
     send_telegram_message("✅ <b>SEO.NEWSITE פעיל 24/7!</b>\nדוח שבועי: כל ראשון ב-09:00.\nשלח כל שאלה SEO ואענה מיד.")
     print("✅ בוט פעיל!")
-    await app.run_polling()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    print("🚀 SEO.NEWSITE מתחיל...")
+    app = Application.builder().token(TELEGRAM_TOKEN).post_init(post_init).build()
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle))
+    app.run_polling()
