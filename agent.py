@@ -132,7 +132,6 @@ async def post_init(application: Application):
         "cron", day_of_week="sun", hour=9, minute=0
     )
     scheduler.start()
-    send_telegram_message("✅ <b>SEO.NEWSITE פעיל 24/7!</b>\nדוח שבועי: כל ראשון ב-09:00.\nשלח כל שאלה SEO ואענה מיד.")
     print("✅ בוט פעיל!")
 
 if __name__ == "__main__":
